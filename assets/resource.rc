@@ -12,10 +12,10 @@ BLOCK "StringFileInfo"
 {
 BLOCK "000004b0"
 {
-VALUE "ProductVersion", "0.0.0"
-VALUE "FileVersion", "0.0.0"
+VALUE "ProductVersion", "1.0.0"
+VALUE "FileVersion", "1.0.0"
 VALUE "ProductName", "Instigator"
-VALUE "FileDescription", "Instigator"
+VALUE "FileDescription", "Open-source Fortnite launcher, built in Rust."
 }
 }
 BLOCK "VarFileInfo" {
