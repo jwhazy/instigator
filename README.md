@@ -22,4 +22,5 @@ You can get started by downloading the latest release [here](https://github.com/
 - Fully customizable, use your own DLLs and backend
 - Simple, Instigator only launches the game with no AC, and optionally automatic DLL injection
 - Single binary
-- **~~No Windows Defender false positive~~**
+- **~~No Windows Defender false positive~~** Trying my hardest to resolve this but chances are Microsoft won't care.
+
