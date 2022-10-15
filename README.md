@@ -1,5 +1,10 @@
 # Instigator
 
+![Rust](https://img.shields.io/badge/Rust-black?style=for-the-badge&logo=rust&logoColor=#E57324)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![PowerShell](https://img.shields.io/badge/powershell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
+[![Build](https://github.com/jwhazy/instigator/actions/workflows/build.yml/badge.svg)](https://github.com/jwhazy/instigator/actions/workflows/build.yml)
+
 Instigator is a basic command-line Fortnite launcher I've been working on for the last day and a bit. It is **extremely** basic. It injects console and a redirect/SSL bypass DLL automatically presuming you provide it, if they aren't provided you will need to inject them yourself. I am still learning Rust so if you see anything that could be improved make an issue or if possible, fix it within a pull request. All feedback is greatly appreciated.
 
 **Versions tested**: 4.1, 5.30, 6.21, 7.30, 7.40, 8.30, 8.51, 10.40, 12.41.
