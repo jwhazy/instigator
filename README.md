@@ -12,9 +12,9 @@ You can get started by downloading the latest release [here](https://github.com/
 
 ## Features
 
-- **No Windows Defender false positive**
 - No GUI, you can use batch scripts or Windows shortcuts to launch the game
 - Usable in automatation and headless/server (no GUI) enviroments
 - Fully customizable, use your own DLLs and backend
 - Simple, Instigator only launches the game with no AC, and optionally automatic DLL injection
 - Single binary
+- **~~No Windows Defender false positive~~**
