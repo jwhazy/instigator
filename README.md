@@ -8,7 +8,7 @@ Instigator is a basic command-line Fortnite launcher I've been working on for th
 
 **If you do not know how to use Command Prompt or Powershell, please use a different launcher. You will not get support for issues based around PowerShell and Command Prompt.**
 
-You can get started by downloading the latest release [here](). Once downloaded, run the program in PowerShell via `.\instigator.exe install`. This will open Windows Explorer to allow you to drag and drop your console and redirect DLLs in. Make sure they are named `console.dll` and `redirect.dll` respectively. Go back to Powershell and run `.\instigator.exe add`. It will provide you with the arguments you need to provide. You can then launch the game using `.\instigator.exe start {VERSION_NAME}`. You need to run your own backend as Instigator does not provide one **yet**.
+You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/download/v1.0.0/instigator.exe). Once downloaded, run the program in PowerShell via `.\instigator.exe install`. This will open Windows Explorer to allow you to drag and drop your console and redirect DLLs in. Make sure they are named `console.dll` and `redirect.dll` respectively. Go back to Powershell and run `.\instigator.exe add`. It will provide you with the arguments you need to provide. You can then launch the game using `.\instigator.exe start {VERSION_NAME}`. You need to run your own backend as Instigator does not provide one **yet**.
 
 ## Features
 
