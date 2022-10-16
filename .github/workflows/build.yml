@@ -21,4 +21,4 @@ jobs:
     - name: Download Rust Nightly
       run: rustup install nightly
     - name: Build
-      run: cargo +nightly build --verbose --all-packages
+      run: cargo +nightly build --verbose
