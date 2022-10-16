@@ -7,13 +7,21 @@
 
 Instigator is a basic command-line Fortnite launcher I've been working on for the last day and a bit. It is **extremely** basic. It injects console and a redirect/SSL bypass DLL automatically presuming you provide it, if they aren't provided you will need to inject them yourself. I am still learning Rust so if you see anything that could be improved make an issue or if possible, fix it within a pull request. All feedback is greatly appreciated.
 
+**If you do not know how to use Command Prompt or Powershell, please use a different launcher. You will not get support for issues based around PowerShell and Command Prompt.**
+
 **Versions tested**: 4.1, 5.30, 6.21, 7.30, 7.40, 8.30, 8.51, 10.40, 12.41.
+
+## Windows Defender false positive ⚠️
+**Please update your Windows Defender definitions if you are having trouble downloading.** Instigator was originally detected as malware. This has been resolved directly with Microsoft and they have updated their anti-malware definitions appropriately. If you are stil having issues join the Discord or create a issue in the repository.  
 
 ## Getting started
 
-**If you do not know how to use Command Prompt or Powershell, please use a different launcher. You will not get support for issues based around PowerShell and Command Prompt.**
+### Automatic install
+You can download the installer [here](https://github.com/jwhazy/instigator/releases/latest/download/Instigator_install.exe). This will automatically add Instigator to your PATH, you can launch Instigator anywhere on the command-line without changing to the directory it is contained within. Once installed, run the program in PowerShell via `instigator install`. This will open Windows Explorer to allow you to drag and drop your console and redirect DLLs in. Make sure they are named `console.dll` and `redirect.dll` respectively. Go back to Powershell and run `instigator add`. It will provide you with the arguments you need to provide. You can then launch the game using `instigator.exe start {VERSION_NAME}`. You need to run your own backend as Instigator does not provide one **yet**.
 
-You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/download/v1.0.0/instigator.exe). Once downloaded, run the program in PowerShell via `.\instigator.exe install`. This will open Windows Explorer to allow you to drag and drop your console and redirect DLLs in. Make sure they are named `console.dll` and `redirect.dll` respectively. Go back to Powershell and run `.\instigator.exe add`. It will provide you with the arguments you need to provide. You can then launch the game using `.\instigator.exe start {VERSION_NAME}`. You need to run your own backend as Instigator does not provide one **yet**.
+
+### Manual download
+You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/download/v1.0.0/instigator.exe), or use the installer. Once downloaded, run the program in PowerShell via `.\instigator.exe install`. This will open Windows Explorer to allow you to drag and drop your console and redirect DLLs in. Make sure they are named `console.dll` and `redirect.dll` respectively. Go back to Powershell and run `.\instigator.exe add`. It will provide you with the arguments you need to provide. You can then launch the game using `.\instigator.exe start {VERSION_NAME}`. You need to run your own backend as Instigator does not provide one **yet**.
 
 ## Features
 
