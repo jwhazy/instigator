@@ -14,11 +14,11 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Download Rust Nightly
       run: rustup install nightly
     - name: Build
-      run: cargo +nightly build --verbose --all-packages
+      run: cargo +nightly build --verbose
