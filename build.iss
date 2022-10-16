@@ -14,16 +14,16 @@ OutputBaseFilename=Instigator_install
 AppVerName=Instigator
 Compression=lzma2
 SolidCompression=yes
-OutputDir=./build
-SetupIconFile=..\assets\installer.ico
+OutputDir=.\build
+SetupIconFile=.\assets\installer.ico
 ChangesEnvironment=true
 DisableProgramGroupPage=yes
 AllowNoIcons=yes
 PrivilegesRequired=none
 
 [Files]
-Source: "..\target\release\instigator.exe"; DestDir: "{app}"
-Source: ".\VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
+Source: ".\target\release\instigator.exe"; DestDir: "{app}"
+Source: ".\build\VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
 
 [Run]
 Filename: "{tmp}\VC_redist.x64.exe"; StatusMsg: "Installing VC redistributables."; \
