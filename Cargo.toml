@@ -1,19 +1,21 @@
 [package]
 name = "instigator"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
 build = "build.rs"
 
 [dependencies]
-sysinfo = "0.26.4"
-winapi = { version = "0.3.9", features = ["tlhelp32"]}
-dll-syringe = "0.13.1"
+sysinfo = "0.29.2"
+dll-syringe = "0.15.2"
 log = "0.4.17"
 serde_json = "1.0.86"
 serde = { version = "1.0.145", features = ["derive"] }
 chrono = "0.4.22"
-dirs = "4.0.0"
+dirs = "5.0.1"
+winapi = { version = "0.3.9", features = ["tlhelp32"]}
 clap = { version = "4.0", features = ["derive"] }
+tokio = "1.28.2"
+ntapi = "0.4.1"
 
 [build-dependencies]
 embed-resource = "1.4"
