@@ -45,7 +45,7 @@ instigator install
 
 3. Add libraries for console, redirect and server. (e.g. console.dll, server.dll, redirect.dll)
 
-4. Add client a client to Instigator.
+4. Add a client to Instigator.
 
 ```
 instigator add
