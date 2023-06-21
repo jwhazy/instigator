@@ -44,6 +44,7 @@ fn cli() -> Command {
                     &[
                         arg!(path: "game path, make sure it includes FortniteGame and Engine folders."),
                         arg!(-u --username [USERNAME] "the username to launch the game with"),
+                        arg!(-p --password [PASSWORD] "the password to launch the game with"),
                         arg!(-t --launch_type [TYPE] "client/server default: client"),
                     ]
                 )
@@ -120,6 +121,8 @@ fn main() {
                 None => "Player".to_string(),
             };
 
+            let password = args.get_one::<String>("password");
+
             let path = args.get_one::<String>("path").expect("Path is missing.");
 
             let mut launch_type = match args.get_one::<String>("launch_type") {
@@ -137,6 +140,7 @@ fn main() {
                     username: username.to_string(),
                     path: path.to_string().into(),
                     launch_type: Some(launch_type.to_string()),
+                    password: password.cloned(),
                 }),
             );
         }
@@ -182,6 +186,7 @@ fn main() {
                 launch_type: Some(launch_type.to_string()),
                 username: username.to_string(),
                 name: name.to_string(),
+                password: None,
             };
 
             let mut clients = config::get();
@@ -256,7 +261,11 @@ fn start(client: &Client) {
     process::start_ac(&client.path);
     process::start_launcher(&client.path);
 
-    let user_arg = &format!("-AUTH_LOGIN={}@localhost", client.username);
+    let user_arg = &format!(
+        "-AUTH_LOGIN={}@localhost -AUTH_PASSWORD={}",
+        client.username,
+        client.password.clone().unwrap_or("null".to_string())
+    );
 
     let fort_args = vec![
         "-epicapp=Fortnite",
@@ -268,7 +277,6 @@ fn start(client: &Client) {
         "-nobe",
         "-fltoken=3c836951cd605a77bc8132f4",
         user_arg,
-        "-AUTH_PASSWORD=null",
         "-AUTH_TYPE=epic", // TO-DO: add caldera.
     ];
 

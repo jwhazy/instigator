@@ -13,6 +13,7 @@ pub struct Client {
     pub(crate) username: String,
     #[serde(rename = "launchType")]
     pub(crate) launch_type: Option<String>,
+    pub(crate) password: Option<String>,
 }
 
 pub fn get() -> Vec<Client> {
