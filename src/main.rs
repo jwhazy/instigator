@@ -261,9 +261,10 @@ fn start(client: &Client) {
     process::start_ac(&client.path);
     process::start_launcher(&client.path);
 
-    let user_arg = &format!(
-        "-AUTH_LOGIN={}@localhost -AUTH_PASSWORD={}",
-        client.username,
+    let user_arg = &format!("-AUTH_LOGIN={}@localhost", client.username);
+
+    let pass_arg = &format!(
+        "-AUTH_PASSWORD={}",
         client.password.clone().unwrap_or("null".to_string())
     );
 
@@ -277,6 +278,7 @@ fn start(client: &Client) {
         "-nobe",
         "-fltoken=3c836951cd605a77bc8132f4",
         user_arg,
+        pass_arg,
         "-AUTH_TYPE=epic", // TO-DO: add caldera.
     ];
 
