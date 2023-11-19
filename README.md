@@ -5,9 +5,11 @@
 ![PowerShell](https://img.shields.io/badge/powershell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
 [![Build](https://github.com/jwhazy/instigator/actions/workflows/build.yml/badge.svg)](https://github.com/jwhazy/instigator/actions/workflows/build.yml)
 
-Instigator is a basic command-line Fortnite launcher. It injects console/game server libraries and a redirect/SSL bypass library automatically presuming you provide it, if they aren't provided you will need to inject them yourself.
+Instigator is a basic, "bring your own libraries" command-line Fortnite launcher.
 
-**If you do not know how to use Command Prompt or PowerShell, please use a different launcher. You will not get support for issues based around PowerShell and Command Prompt.**
+**If you do not know how to use Command Prompt or PowerShell, please use a different launcher. You will not get support for issues based around the command-line.**
+
+**Instigator does not work on versions later than Chapter 2, Season 6.**
 
 **Versions tested**: 4.1, 5.30, 6.21, 7.30, 7.40, 8.30, 8.51, 10.40, 12.41.
 
