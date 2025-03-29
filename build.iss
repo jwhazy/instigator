@@ -4,7 +4,7 @@
 
 [Setup]
 AppName=Instigator
-AppVersion=2.1.1
+AppVersion=3.0.0
 AppPublisher=jacksta
 WizardStyle=modern
 DefaultDirName={userpf}\instigator

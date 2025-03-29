@@ -42,7 +42,7 @@ You can get started by downloading the latest release [here](https://github.com/
 1. Prepare and open Instigator folder
 
 ```
-instigator install
+instigator folder
 ```
 
 3. Add libraries for console, redirect and server. (e.g. console.dll, server.dll, redirect.dll)

@@ -2,19 +2,23 @@ use std::{
     io::{BufRead, BufReader},
     path::PathBuf,
     process::Stdio,
+    sync::atomic::AtomicBool
 };
 
 use clap::{arg, Command, Parser};
 use config::Client;
+use ctrlc;
 use dll_syringe::{process::OwnedProcess, Syringe};
 use log::{error, info, warn};
 
-use crate::config::app_directory;
+use crate::process::{kill_all, kill_fortnite};
 
 mod config;
 mod logger;
 mod process;
 mod utils;
+
+static CTRL_C_PRESSED: AtomicBool = AtomicBool::new(false);
 
 #[derive(Parser)]
 struct Cli {
@@ -27,14 +31,14 @@ struct Cli {
 fn cli() -> Command {
     Command::new("instigator")
         .about("Open-source Fortnite launcher, built in Rust.")
-        .author("jacksta <jacksta@pm.me>")
+        .author("jacksta <me@jacksta.dev>")
         .subcommand_required(true)
         .arg_required_else_help(true)
         .allow_external_subcommands(false)
         .subcommand(
             Command::new("start")
                 .about("Launch game via a saved client")
-                .args(&[arg!(name: "name of the client to launch"), arg!(-t --launch_type [TYPE] "client/server default: client")])
+                .args(&[arg!(name: "name of the client to launch")])
                 .arg_required_else_help(true)
         )
         .subcommand(
@@ -44,6 +48,7 @@ fn cli() -> Command {
                     &[
                         arg!(path: "game path, make sure it includes FortniteGame and Engine folders."),
                         arg!(-u --username [USERNAME] "the username to launch the game with"),
+                        arg!(-e --email [EMAIL] "the email domain to launch the game with e.g. gmail.com or localhost"),
                         arg!(-p --password [PASSWORD] "the password to launch the game with"),
                         arg!(-t --launch_type [TYPE] "client/server default: client"),
                     ]
@@ -58,6 +63,7 @@ fn cli() -> Command {
                         arg!(name: "the name to save the client under"),
                         arg!(path:  "game path, make sure it includes FortniteGame and Engine folders."),
                         arg!(-u --username <USERNAME> "the username to launch the game with"),
+                        arg!(-e --email [EMAIL] "the email domain to launch the game with e.g. gmail.com or localhost"),
                         arg!(-t --launch_type <TYPE> "client/server default: client"),
                     ]
                 )
@@ -69,7 +75,12 @@ fn cli() -> Command {
                 .args(&[arg!(name: "the name of the client to remove")])
         )
         .subcommand(Command::new("list").about("List all added clients"))
-        .subcommand(Command::new("install").about("Prepare Instigator for use"))
+        .subcommand(Command::new("folder").about("Open the Instigator directory"))
+        .subcommand(
+            Command::new("install")
+                .about("Prepare Instigator for use (deprecated, use 'folder' instead)")
+                .hide(true)
+        )
 }
 
 #[allow(dead_code)]
@@ -79,6 +90,16 @@ fn push_args() -> Vec<clap::Arg> {
 
 fn main() {
     logger::logger_init().expect("Failed to initialize logger.");
+
+    ctrlc::set_handler(move || {
+        if !CTRL_C_PRESSED.load(std::sync::atomic::Ordering::SeqCst) {
+            info!("Received Ctrl+C, cleaning up processes...");
+            kill_fortnite();
+            kill_all();
+            CTRL_C_PRESSED.store(true, std::sync::atomic::Ordering::SeqCst);
+        }
+    })
+    .expect("Error setting Ctrl+C handler");
 
     println!(
         r"
@@ -102,13 +123,22 @@ fn main() {
 
     match matches.subcommand() {
         Some(("start", args)) => {
-            let name = args.get_one::<String>("name").expect("No name found.");
+            let name = match args.get_one::<String>("name") {
+                Some(name) => name,
+                None => {
+                    error!("No name found.");
+                    std::process::exit(1);
+                }
+            };
 
             let config = config::get();
-            let client = config
-                .iter()
-                .find(|client| client.name == name.to_string())
-                .expect("No client found with that name.");
+            let client = match config.iter().find(|client| client.name == name.to_string()) {
+                Some(client) => client,
+                None => {
+                    error!("No client found with that name.");
+                    std::process::exit(1);
+                }
+            };
 
             start(client);
         }
@@ -130,6 +160,11 @@ fn main() {
                 None => "client".to_string(),
             };
 
+            let email = match args.get_one::<String>("email") {
+                Some(value) => value.to_string(),
+                None => "localhost".to_string(),
+            };
+
             if !["server", "client", "headless"].contains(&launch_type.as_str()) {
                 launch_type = "client".to_string();
             }
@@ -139,6 +174,7 @@ fn main() {
                     name: "custom".to_string(),
                     username: username.to_string(),
                     path: path.to_string().into(),
+                    email: email.into(),
                     launch_type: Some(launch_type.to_string()),
                     password: password.cloned(),
                 }),
@@ -156,6 +192,11 @@ fn main() {
             let mut launch_type = match args.get_one::<String>("launch_type") {
                 Some(value) => value.to_string(),
                 None => "client".to_string(),
+            };
+
+            let email = match args.get_one::<String>("email") {
+                Some(value) => value.to_string(),
+                None => "localhost".to_string(),
             };
 
             if !["server", "client", "headless"].contains(&launch_type.as_str()) {
@@ -185,16 +226,10 @@ fn main() {
                 path,
                 launch_type: Some(launch_type.to_string()),
                 username: username.to_string(),
+                email: Some(email.to_string()),
                 name: name.to_string(),
                 password: None,
             };
-
-            let mut clients = config::get();
-
-            if clients.iter().any(|client| client.name == name.to_string()) {
-                error!("Client name already exists.");
-                std::process::exit(1);
-            }
 
             clients.push(client);
             config::save(clients);
@@ -213,29 +248,26 @@ fn main() {
 
             info!("Removed client: {}", name);
         }
+        Some(("kill", _)) => kill_all(),
 
-        Some(("install", _args)) => {
-            std::process::Command::new("explorer")
-                .arg(app_directory())
-                .spawn()
-                .expect("Could not open File Explorer. Please navigate to %appdata%\\instigator manually.");
+        Some(("folder", _)) => utils::folder(),
 
-            info!("Opened Instigator directory.\n");
-            println!(
-                "Please add your console, SSL bypass/redirect, and game server libraries. Make sure they are named console.dll, redirect.dll and server.dll respectively."
-            );
-            println!("Set-up complete. Please add a client by running `instigator.exe add`");
+        Some(("install", _)) => {
+            warn!("The 'install' command is deprecated. Please use 'folder' instead.");
+            utils::folder()
         }
 
         Some(("list", _args)) => {
+            println!("name - path - username - email - launch type");
             let clients = config::get();
             for client in clients {
                 println!(
-                    "{} - {} - {} - {}",
+                    "{} - {} - {} - {} - {}",
                     client.name,
-                    client.path.to_str().unwrap(),
+                    client.path.to_str().unwrap_or("<invalid path>"),
                     client.username,
-                    client.launch_type.unwrap()
+                    client.email.unwrap_or_else(|| "unknown".to_string()),
+                    client.launch_type.unwrap_or_else(|| "unknown".to_string())
                 );
             }
         }
@@ -248,96 +280,137 @@ fn main() {
 }
 
 fn inject(path: PathBuf, pid: u32) {
-    let target_process = OwnedProcess::from_pid(pid);
-    let syringe = Syringe::for_process(target_process.unwrap());
+    let target_process = match OwnedProcess::from_pid(pid) {
+        Ok(process) => process,
+        Err(_) => {
+            error!("Could not find process with PID: {}", pid);
+            return;
+        }
+    };
 
-    syringe.inject(path.as_path()).unwrap();
+    let syringe = Syringe::for_process(target_process);
+
+    match syringe.inject(path.as_path()) {
+        Ok(_) => info!("Successfully injected DLL"),
+        Err(e) => error!("Failed to inject DLL: {}", e),
+    }
 }
 
 fn start(client: &Client) {
     let mut game_path = PathBuf::from(&client.path);
     game_path.push("FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping.exe");
+    
+    if !game_path.exists() {
+        error!("Game path does not exist.");
+        std::process::exit(1);
+    }
 
     process::start_ac(&client.path);
     process::start_launcher(&client.path);
 
-    let user_arg = &format!("-AUTH_LOGIN={}@localhost", client.username);
-
-    let pass_arg = &format!(
+    let default_email = "localhost".to_string();
+    let email = client.email.as_ref().unwrap_or(&default_email);
+    
+    let user_arg = format!("-AUTH_LOGIN={}@{}", client.username, email);
+    let pass_arg = format!(
         "-AUTH_PASSWORD={}",
-        client.password.clone().unwrap_or("null".to_string())
+        client.password.as_deref().unwrap_or("null")
     );
 
     let fort_args = vec![
         "-epicapp=Fortnite",
         "-epicenv=Prod",
         "-epiclocale=en-us",
-        "-epicportal",
+        "-epicportal", 
         "-skippatchcheck",
         "-fromfl=eac",
         "-nobe",
         "-fltoken=3c836951cd605a77bc8132f4",
-        user_arg,
-        pass_arg,
+        &user_arg,
+        &pass_arg,
         "-AUTH_TYPE=epic", // TO-DO: add caldera.
     ];
 
-    let mut cmd = std::process::Command::new(game_path)
+    let mut fortnite = match std::process::Command::new(&game_path)
         .args(&fort_args)
         .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
+        .spawn() {
+            Ok(process) => process,
+            Err(e) => {
+                error!("Failed to start Fortnite process: {}", e);
+                std::process::exit(1);
+            }
+        };
 
-    let pid: u32 = cmd.id();
-    let stdout = cmd.stdout.as_mut().unwrap();
+    let pid = fortnite.id();
+
+    let stdout = match fortnite.stdout.take() {
+        Some(stdout) => stdout,
+        None => {
+            error!("Failed to capture stdout");
+            std::process::exit(1);
+        }
+    };
+
     let stdout_reader = BufReader::new(stdout);
     let stdout_lines = stdout_reader.lines();
 
+    let config_dir = match dirs::config_dir() {
+        Some(dir) => dir,
+        None => {
+            error!("Could not determine config directory");
+            std::process::exit(1);
+        }
+    };
+
     let redirect: PathBuf = [
-        dirs::config_dir().unwrap().to_str().unwrap().to_owned(),
-        "instigator".to_owned(),
-        "redirect.dll".to_string(),
-    ]
-    .iter()
-    .collect();
+        config_dir.to_str().unwrap_or_default(),
+        "instigator",
+        "redirect.dll",
+    ].iter().collect();
 
     if redirect.exists() {
         info!("Injecting redirect library.");
         inject(redirect, pid);
     } else {
-        warn!("No redirect library not found. Make sure you are using Fiddler or similar.");
+        warn!("No redirect library found. You can ignore this message if you are using Fiddler or similar.");
     }
 
     for line in stdout_lines {
-        let line = line.unwrap();
+        let line = match line {
+            Ok(l) => l,
+            Err(e) => {
+                error!("Failed to read stdout: {}", e);
+                info!("Reading console failed. This can happen when a DLL unlocks the console.");
+                continue;
+            }
+        };
         info!("{}", line);
 
         // We are looking for a safe state to unlock console.
         // If this is too early or too late for some versions let me know :).
         if line.contains("LogInit: Display: Starting Game.") {
             let console: PathBuf = [
-                dirs::config_dir().unwrap().to_str().unwrap().to_owned(),
-                "instigator".to_owned(),
-                "console.dll".to_string(),
-            ]
-            .iter()
-            .collect();
+                config_dir.to_str().unwrap_or_default(),
+                "instigator",
+                "console.dll",
+            ].iter().collect();
 
             let server: PathBuf = [
-                dirs::config_dir().unwrap().to_str().unwrap().to_owned(),
-                "instigator".to_owned(),
-                "server.dll".to_string(),
-            ]
-            .iter()
-            .collect();
+                config_dir.to_str().unwrap_or_default(), 
+                "instigator",
+                "server.dll",
+            ].iter().collect();
 
-            if client.launch_type.clone().unwrap() != "server" {
+            let launch_type = client.launch_type.as_deref().unwrap_or("client");
+
+            if launch_type != "server" {
                 if console.exists() {
                     info!("Injecting console unlock.");
                     std::thread::sleep(std::time::Duration::from_secs(5));
                     inject(console, pid);
                 } else {
-                    warn!("No console library not found. You will have to inject this manually.");
+                    warn!("No console library found. You will have to inject this manually.");
                 }
             } else {
                 if server.exists() {
@@ -345,15 +418,16 @@ fn start(client: &Client) {
                     std::thread::sleep(std::time::Duration::from_secs(5));
                     inject(server, pid);
                 } else {
-                    warn!(
-                        "No game server library not found. You will have to inject this manually."
-                    );
+                    warn!("No game server library found. You will have to inject this manually.");
                 }
             }
         }
     }
-    cmd.wait().unwrap();
-    process::kill_all();
 
-    info!("Game closed, Instigator cleaning up. ");
+    if let Err(e) = fortnite.wait() {
+        error!("Error waiting for Fortnite process to exit: {}", e);
+    }
+    
+    process::kill_all();
+    info!("Game closed, Instigator cleaning up.");
 }

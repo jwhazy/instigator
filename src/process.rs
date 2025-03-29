@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::process::Command;
 
-use log::info;
+use log::{error, info};
 use winapi::shared::minwindef::FALSE;
 use winapi::um::handleapi::CloseHandle;
 use winapi::um::processthreadsapi::{OpenThread, SuspendThread};
@@ -11,7 +11,17 @@ use winapi::um::tlhelp32::{
 use winapi::um::winnt::HANDLE;
 use winapi::um::winnt::THREAD_SUSPEND_RESUME;
 
-use sysinfo::{ProcessExt, System, SystemExt};
+use sysinfo::System;
+
+pub fn kill_fortnite() {
+    let mut system = System::new_all();
+    system.refresh_all();
+
+    for ac in system.processes_by_name("FortniteClient-Win64-Shipping.exe") {
+        info!("Killing process: {}", ac.name());
+        ac.kill();
+    }
+}
 
 pub fn kill_all() {
     let mut system = System::new_all();
@@ -35,9 +45,15 @@ pub fn start_ac(path: &PathBuf) {
     let mut cwd = PathBuf::from(&path);
     cwd.push("FortniteGame\\Binaries\\Win64");
 
-    let process = Command::new(ac_path).current_dir(&cwd).spawn().unwrap();
+    let process = Command::new(ac_path).current_dir(&cwd).spawn();
 
-    suspend_process(process.id());
+    match process {
+        Ok(result) => suspend_process(result.id()),
+        Err(_err) => {
+            error!("Could not start EAC process. Make sure it exists before trying again.");
+            (0, false)
+        }
+    };
 }
 
 pub fn start_launcher(path: &PathBuf) {
@@ -47,12 +63,15 @@ pub fn start_launcher(path: &PathBuf) {
     let mut cwd = PathBuf::from(&path);
     cwd.push("FortniteGame\\Binaries\\Win64");
 
-    let process = Command::new(launcher_path)
-        .current_dir(&cwd)
-        .spawn()
-        .unwrap();
+    let process = Command::new(launcher_path).current_dir(&cwd).spawn();
 
-    suspend_process(process.id());
+    match process {
+        Ok(result) => suspend_process(result.id()),
+        Err(_err) => {
+            error!("Could not start FortniteLauncher process. Make sure it exists before trying again.");
+            (0, false)
+        }
+    };
 }
 
 // Credit: afc11hn.  https://www.reddit.com/r/rust/comments/xu2hiw/comment/iqtrpb5
@@ -86,6 +105,6 @@ pub fn suspend_process(pid: u32) -> (u32, bool) {
 
         CloseHandle(snapshot);
 
-        (count, has_err)
+        return (count, has_err);
     }
 }
