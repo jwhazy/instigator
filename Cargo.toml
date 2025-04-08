@@ -14,7 +14,7 @@ chrono = "0.4.31"
 dirs = "5.0.1"
 winapi = { version = "0.3.9", features = ["tlhelp32"]}
 clap = { version = "4.4.16", features = ["derive"] }
-tokio = "1.35.1"
+tokio = "1.44.2"
 ntapi = "0.4.1"
 windows = "0.52.0"
 opener = "0.7.2"
