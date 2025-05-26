@@ -35,7 +35,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: instigator.exe
-        path: .\target\release\instigator.exe
+        path: target\release\instigator.exe
     
     - name: Upload installer
       run: ls
