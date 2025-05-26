@@ -17,6 +17,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Download Rust nightly
       run: rustup install nightly-2024-04-24
 
@@ -32,12 +33,15 @@ jobs:
         path: build.iss 
         options: /O+
 
-    - uses: actions/upload-artifact@v4
+    - name: Upload binary
+      uses: actions/upload-artifact@v4
       with:
         name: instigator.exe
         path: .\target\release\instigator.exe
-    
-    - name: Upload installer
-      run: ls
 
+    - name: Upload installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: Instigator_install.exe
+        path: .\build\Instigator_install.exe
     
