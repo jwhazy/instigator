@@ -21,7 +21,7 @@ jobs:
       run: rustup install nightly-2024-04-24
 
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --verbose --release
 
     - name: Download VC redistributables
       run: Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
@@ -35,7 +35,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: instigator.exe
-        path: target\release\instigator.exe
+        path: .\target\release\instigator.exe
     
     - name: Upload installer
       run: ls
