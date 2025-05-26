@@ -22,7 +22,7 @@ AllowNoIcons=yes
 PrivilegesRequired=none
 
 [Files]
-Source: ".\target\release\instigator.exe"; DestDir: "{app}"
+Source: "target\release\instigator.exe"; DestDir: "{app}"
 Source: ".\build\VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
 
 [Run]
