@@ -23,7 +23,7 @@ PrivilegesRequired=none
 
 [Files]
 Source: "target\release\instigator.exe"; DestDir: "{app}"
-Source: ".\build\VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
+Source: "VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
 
 [Run]
 Filename: "{tmp}\VC_redist.x64.exe"; StatusMsg: "Installing VC redistributables."; \
