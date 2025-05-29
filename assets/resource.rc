@@ -1,26 +1,31 @@
 #pragma code_page(65001)
-1 VERSIONINFO
-PRODUCTVERSION 0, 0, 0, 0
-FILESUBTYPE 0x0
-FILEFLAGS 0x0
-FILETYPE 0x1
-FILEVERSION 0, 0, 0, 0
-FILEOS 0x40004
-FILEFLAGSMASK 0x3f
-{
-BLOCK "StringFileInfo"
-{
-BLOCK "000004b0"
-{
-VALUE "ProductVersion", "1.0.0"
-VALUE "FileVersion", "1.0.0"
-VALUE "ProductName", "Instigator"
-VALUE "FileDescription", "Open-source Fortnite launcher, built in Rust."
-}
-}
-BLOCK "VarFileInfo" {
-VALUE "Translation", 0x0, 0x04b0
-}
-}
-32512 ICON "assets/icon.ico"
 
+1 VERSIONINFO
+FILEVERSION 3,0,0,0
+PRODUCTVERSION 3,0,0,0
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS 0x40004L
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "jacksta"
+            VALUE "FileDescription", "Command-line Fortnite launcher"
+            VALUE "FileVersion", "3.0.0.0"
+            VALUE "InternalName", "Instigator"
+            VALUE "OriginalFilename", "instigator.exe"
+            VALUE "ProductName", "Instigator"
+            VALUE "ProductVersion", "3.0.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END
+
+32512 ICON "assets/icon.ico"
