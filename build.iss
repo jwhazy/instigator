@@ -2,32 +2,35 @@
 ; https://stackoverflow.com/questions/3304463/how-do-i-modify-the-path-environment-variable-when-running-an-inno-setup-install
 ; https://stackoverflow.com/questions/24574035/how-to-install-microsoft-vc-redistributables-silently-in-inno-setup
 
+#define Version "3.0.0"
+
 [Setup]
 AppName=Instigator
-AppVersion=3.0.0
+AppVersion={#Version}
+VersionInfoVersion={#Version}
 AppPublisher=jacksta
 WizardStyle=modern
 DefaultDirName={userpf}\instigator
 DefaultGroupName=Instigator
 UninstallDisplayIcon={app}\instigator.exe
-OutputBaseFilename=Instigator_install
+OutputBaseFilename=InstigatorSetup-{#Version}
 AppVerName=Instigator
 Compression=lzma2
 SolidCompression=yes
 OutputDir=.\build
-SetupIconFile=.\assets\installer.ico
+SetupIconFile=.\assets\icon.ico
 ChangesEnvironment=true
 DisableProgramGroupPage=yes
 AllowNoIcons=yes
 PrivilegesRequired=none
 
 [Files]
-Source: ".\target\release\instigator.exe"; DestDir: "{app}"
-Source: ".\build\VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
+Source: "target\release\instigator.exe"; DestDir: "{app}"
+Source: "VC_redist.x64.exe"; DestDir: {tmp}; Flags: dontcopy
 
 [Run]
-Filename: "{tmp}\VC_redist.x64.exe"; StatusMsg: "Installing VC redistributables."; \
-  Parameters: "/quiet"; Check: InstallRedist ; Flags: waituntilterminated
+Filename: "{tmp}\VC_redist.x64.exe"; StatusMsg: "Prompting Visual C++ redistributables installer, this can take a moment..."; \
+  Parameters: "/install /passive /norestart"; Check: InstallRedist ; Flags: waituntilterminated
 
 [Code]
 const EnvironmentKey = 'Environment';

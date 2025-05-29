@@ -16,8 +16,43 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Download Rust Nightly
-      run: rustup install nightly-2024-04-24
-    - name: Build
-      run: cargo build --verbose
+      - uses: actions/checkout@v4
+
+      - name: Download Rust nightly
+        run: rustup install nightly-2024-04-24
+
+      - name: Build
+        run: cargo build --verbose --release
+
+      - name: Download VC redistributables
+        run: Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
+
+      - name: Get file version of instigator.exe
+        id: get_version
+        shell: pwsh
+        run: |
+          $exePath = ".\target\release\instigator.exe"
+          $version = (Get-Item $exePath).VersionInfo.FileVersionRaw
+          if ($version -match "(\d+\.\d+\.\d+)\.0") {
+            $version = $matches[1]
+          }
+          echo "Extracted version: $version"
+          echo "file_version=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build installer 
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: build.iss 
+          options: /O+
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: instigator.exe
+          path: .\target\release\instigator.exe
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: InstigatorSetup-${{ env.file_version }}.exe
+          path: .\build\
