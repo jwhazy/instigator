@@ -19,11 +19,11 @@ Instigator is a basic, "bring your own libraries" command-line Fortnite launcher
 - **GUI-less** Usable in automation, batch scripts and headless/server enviroments.
 - **Fully customizable**, use your own libraries and backend.
 - **Simple** Instigator only launches the game with no AC, and optionally automatic library injection.
-- **Single binary** No dependencies or extraneous libraries required to use Instigator.
+- **Single binary** Instigator compiles to a single binary making it easy to quickly use
 
 ## Installation
 
-### WinGet
+### WinGet (installer)
 
 ```
 winget install Jacksta.Instigator
@@ -31,27 +31,32 @@ winget install Jacksta.Instigator
 
 ### Automatic installer
 
-You can download the latest installer [here](https://github.com/jwhazy/instigator/releases/latest/download/Instigator_install.exe).
+You can download the latest installer [here](https://github.com/jwhazy/instigator/releases/latest/).
+### Single binary
 
-### Manual install
-
-You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/download/v1.0.0/instigator.exe). You will need to add Instigator to PATH if you want to use it globally.
+You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/latest). You will need to add Instigator to PATH if you want to use it globally. You may also need the Visual C++ Redistributable package (error: VCRUNTIME140.dll was not found.) which can downloaded from Microsoft [here](https://aka.ms/vs/17/release/vc_redist.x64.exe).
 
 ## Getting started
 
-1. Prepare and open Instigator folder
+1. To quickly open the Instigator folder use:
 
 ```
 instigator folder
 ```
 
-3. Add libraries for console, redirect and server. (e.g. console.dll, server.dll, redirect.dll)
+3. Add libraries for console, redirect and server (e.g. console.dll, server.dll, redirect.dll)
 
-4. Add a client to Instigator.
+4. Add a client to Instigator
 
 ```
 instigator add
 ```
+5. Run the newly added client
+```
+instigator run [name]
+```
+
+For more help run `instigator` with no arguments.
 
 ## Useful tools
 
