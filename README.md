@@ -1,9 +1,8 @@
 # Instigator
-
+![Downloads](https://img.shields.io/github/downloads/jwhazy/instigator/total?style=for-the-badge)
 ![Rust](https://img.shields.io/badge/Rust-black?style=for-the-badge&logo=rust&logoColor=#E57324)
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/powershell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
-[![Build](https://github.com/jwhazy/instigator/actions/workflows/build.yml/badge.svg)](https://github.com/jwhazy/instigator/actions/workflows/build.yml)
 
 Instigator is a basic, "bring your own libraries" command-line Fortnite launcher.
 
@@ -29,12 +28,15 @@ Instigator is a basic, "bring your own libraries" command-line Fortnite launcher
 winget install Jacksta.Instigator
 ```
 
-### Automatic installer
-
-You can download the latest installer [here](https://github.com/jwhazy/instigator/releases/latest/).
 ### Single binary
 
-You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/latest). You will need to add Instigator to PATH if you want to use it globally. You may also need the Visual C++ Redistributable package (error: VCRUNTIME140.dll was not found.) which can downloaded from Microsoft [here](https://aka.ms/vs/17/release/vc_redist.x64.exe).
+You can get started by downloading the latest release [here](https://github.com/jwhazy/instigator/releases/latest). You will need to add Instigator to PATH if you want to use it globally. You may also need the Visual C++ Redistributable package (error: VCRUNTIME140.dll was not found) which can downloaded from Microsoft [here](https://aka.ms/vs/17/release/vc_redist.x64.exe).
+
+Alternatively, using the installer below will also install the Visual C++ Redistributables.
+
+### Installer
+You can download the latest installer [here](https://github.com/jwhazy/instigator/releases/latest/).
+
 
 ## Getting started
 
