@@ -8,7 +8,7 @@ Instigator is a basic, "bring your own libraries" command-line Fortnite launcher
 
 **If you do not know how to use Command Prompt or PowerShell, please use a different launcher. You will not get support for issues based around the command-line.**
 
-**Instigator does not work on versions later than Chapter 2, Season 6.**
+**Instigator does not work on versions later than Chapter 2, Season ~8.**
 
 **Versions tested**: 4.1, 5.30, 6.21, 7.30, 7.40, 8.30, 8.51, 10.40, 12.41.
 
